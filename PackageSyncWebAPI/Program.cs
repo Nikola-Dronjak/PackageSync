@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using PackageSyncWebAPI.Infrastructure;
 using PackageSyncWebAPI.Validators;
 using PackageSyncWebAPI.Services;
-using PackageSyncWebAPI.Models;
+using PackageSync.Domain;
 using PackageSyncWebAPI.Middleware;
 using Serilog;
 using FluentValidation;

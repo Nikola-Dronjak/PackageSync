@@ -1,4 +1,4 @@
-﻿using PackageSyncWebAPI.Models;
+﻿using PackageSync.Domain;
 
 namespace PackageSyncWebAPI.Services
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PackageSync.Domain;
 using PackageSyncWebAPI.Infrastructure;
-using PackageSyncWebAPI.Models;
 
 namespace PackageSyncWebAPI.Services
 {

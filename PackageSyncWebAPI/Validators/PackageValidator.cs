@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using PackageSyncWebAPI.Models;
+using PackageSync.Domain;
 
 namespace PackageSyncWebAPI.Validators
 {

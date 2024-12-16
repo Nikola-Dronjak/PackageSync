@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
-using PackageSyncWebAPI.Models;
+using PackageSync.Domain;
 using PackageSyncWebAPI.Services;
 
 namespace PackageSyncWebAPI.Controllers

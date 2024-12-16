@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageSyncWebAPI", "PackageSyncWebAPI\PackageSyncWebAPI.csproj", "{CB366C9E-3A02-43D0-8EE9-7881A144FD47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageSyncWebAPI", "PackageSyncWebAPI\PackageSyncWebAPI.csproj", "{CB366C9E-3A02-43D0-8EE9-7881A144FD47}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageSync.Domain", "PackageSync.Domain\PackageSync.Domain.csproj", "{15F4FAC6-6FF1-422C-8E9A-A21A70764759}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{CB366C9E-3A02-43D0-8EE9-7881A144FD47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB366C9E-3A02-43D0-8EE9-7881A144FD47}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CB366C9E-3A02-43D0-8EE9-7881A144FD47}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15F4FAC6-6FF1-422C-8E9A-A21A70764759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F4FAC6-6FF1-422C-8E9A-A21A70764759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F4FAC6-6FF1-422C-8E9A-A21A70764759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F4FAC6-6FF1-422C-8E9A-A21A70764759}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

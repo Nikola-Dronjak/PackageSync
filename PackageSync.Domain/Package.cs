@@ -1,4 +1,4 @@
-﻿namespace PackageSyncWebAPI.Models
+﻿namespace PackageSync.Domain
 {
     /// <summary>
     /// Represents the Package entity.
