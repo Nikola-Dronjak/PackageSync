@@ -18,6 +18,14 @@ namespace PackageSyncWebAPI.Controllers
             _packageService = packageService;
         }
 
+        /// <summary>
+        /// Fetches all the packages.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows clients to retrieve all the packages.
+        /// </remarks>
+        /// <response code="200">Packages retrieved successfully. Returns a list of all the retrieved packages.</response>
+        /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpGet]
         public async Task<IActionResult> GetAllPackages()
         {
@@ -32,6 +40,16 @@ namespace PackageSyncWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Fetches a specific package.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows clients to retrieve a specific package by providing its id.
+        /// </remarks>
+        /// <param name="id">The id of the package that should be retrieved.</param>
+        /// <response code="200">Package retrieved successfully. Returns the retrieved package.</response>
+        /// <response code="404">The package with the given id was not found.</response>
+        /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetPackageById(Guid id)
         {
@@ -50,7 +68,18 @@ namespace PackageSyncWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Creates a new package.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows clients to create a new package by providing the necessary details in the request body.
+        /// </remarks>
+        /// <param name="package">The details of the package to create.</param>
+        /// <response code="201">Package created successfully. Returns the newly created package.</response>
+        /// <response code="400">Validation failed. Returns a list of validation errors.</response>
+        /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<IActionResult> AddPackage(Package package)
         {
             try
@@ -71,6 +100,18 @@ namespace PackageSyncWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an existing package.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows clients to update the information of an existing package by providing the necessary details in the request body.
+        /// </remarks>
+        /// <param name="id">The id of the package that should be updated.</param>
+        /// <param name="package">The information that should be updated for the given package.</param>
+        /// <response code="200">Package updated successfully. Returns the updated package.</response>
+        /// <response code="400">Bad request (package not found, attempting to update a delivered package or validation errors). Returns the appropriate error message.</response>
+        /// <response code="404">The package with the given id was not found.</response>
+        /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdatePackage(Guid id, Package package)
         {
@@ -104,6 +145,16 @@ namespace PackageSyncWebAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Removes an existing package.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint allows clients to remove an existing package by providing its id.
+        /// </remarks>
+        /// <param name="id">The id of the package that should be removed.</param>
+        /// <response code="200">Package removed successfully. Returns the removed package.</response>
+        /// <response code="404">The package with the given id was not found.</response>
+        /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeletePackage(Guid id)
         {
