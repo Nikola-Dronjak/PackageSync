@@ -26,7 +26,7 @@ namespace PackageSyncWebAPI.Controllers
                 IEnumerable<Package> packages = await _packageService.GetAll();
                 return Ok(packages.ToList());
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error. Try again later.");
             }
@@ -44,7 +44,7 @@ namespace PackageSyncWebAPI.Controllers
             {
                 return NotFound(keyNotFoundException.Message);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error. Try again later.");
             }
@@ -57,12 +57,15 @@ namespace PackageSyncWebAPI.Controllers
             {
                 var validatorResult = _validator.Validate(package);
                 if (!validatorResult.IsValid)
-                    return BadRequest(validatorResult.Errors);
+                {
+                    var validationErrors = validatorResult.Errors.GroupBy(e => e.PropertyName).ToDictionary(g => g.Key,g => g.Select(e => e.ErrorMessage).ToArray());
+                    return BadRequest(validationErrors);
+                }
 
                 Package addedPackage = await _packageService.Add(package);
                 return Created(string.Empty, addedPackage);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error. Try again later.");
             }
@@ -75,7 +78,10 @@ namespace PackageSyncWebAPI.Controllers
             {
                 var validatorResult = _validator.Validate(package);
                 if (!validatorResult.IsValid)
-                    return BadRequest(validatorResult.Errors);
+                {
+                    var validationErrors = validatorResult.Errors.GroupBy(e => e.PropertyName).ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+                    return BadRequest(validationErrors);
+                }
 
                 Package updatedPackage = await _packageService.Update(id, package);
                 return Ok(updatedPackage);
@@ -92,7 +98,7 @@ namespace PackageSyncWebAPI.Controllers
             {
                 return BadRequest(argumentException.Message);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error. Try again later.");
             }
@@ -110,7 +116,7 @@ namespace PackageSyncWebAPI.Controllers
             {
                 return NotFound(keyNotFoundException.Message);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 return StatusCode(500, "Internal server error. Try again later.");
             }
