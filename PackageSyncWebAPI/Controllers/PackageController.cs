@@ -34,9 +34,13 @@ namespace PackageSyncWebAPI.Controllers
                 IEnumerable<Package> packages = await _packageService.GetAll();
                 return Ok(packages.ToList());
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return StatusCode(500, "Internal server error. Try again later.");
+                return StatusCode(500, new
+                {
+                    title = "Internal server error",
+                    details = exception.Message
+                });
             }
         }
 
@@ -60,11 +64,19 @@ namespace PackageSyncWebAPI.Controllers
             }
             catch (KeyNotFoundException keyNotFoundException)
             {
-                return NotFound(keyNotFoundException.Message);
+                return NotFound(new
+                {
+                    title = "Item not found",
+                    details = keyNotFoundException.Message
+                });
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return StatusCode(500, "Internal server error. Try again later.");
+                return StatusCode(500, new
+                {
+                    title = "Internal server error",
+                    details = exception.Message
+                });
             }
         }
 
@@ -87,16 +99,24 @@ namespace PackageSyncWebAPI.Controllers
                 var validatorResult = _validator.Validate(package);
                 if (!validatorResult.IsValid)
                 {
-                    var validationErrors = validatorResult.Errors.GroupBy(e => e.PropertyName).ToDictionary(g => g.Key,g => g.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(validationErrors);
+                    var validationErrors = validatorResult.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage);
+                    return BadRequest(new
+                    {
+                        title = "Validation error",
+                        details = validationErrors
+                    });
                 }
 
                 Package addedPackage = await _packageService.Add(package);
                 return Created(string.Empty, addedPackage);
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return StatusCode(500, "Internal server error. Try again later.");
+                return StatusCode(500, new
+                {
+                    title = "Internal server error",
+                    details = exception.Message
+                });
             }
         }
 
@@ -120,8 +140,12 @@ namespace PackageSyncWebAPI.Controllers
                 var validatorResult = _validator.Validate(package);
                 if (!validatorResult.IsValid)
                 {
-                    var validationErrors = validatorResult.Errors.GroupBy(e => e.PropertyName).ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
-                    return BadRequest(validationErrors);
+                    var validationErrors = validatorResult.Errors.ToDictionary(e => e.PropertyName, e => e.ErrorMessage);
+                    return BadRequest(new
+                    {
+                        title = "Validation error",
+                        details = validationErrors
+                    });
                 }
 
                 Package updatedPackage = await _packageService.Update(id, package);
@@ -129,19 +153,35 @@ namespace PackageSyncWebAPI.Controllers
             }
             catch (KeyNotFoundException keyNotFoundException)
             {
-                return NotFound(keyNotFoundException.Message);
+                return NotFound(new
+                {
+                    title = "Item not found",
+                    details = keyNotFoundException.Message
+                });
             }
             catch (InvalidOperationException invalidOperationException)
             {
-                return BadRequest(invalidOperationException.Message);
+                return BadRequest(new
+                {
+                    title = "Invalid operation",
+                    details = invalidOperationException.Message
+                });
             }
             catch (ArgumentException argumentException)
             {
-                return BadRequest(argumentException.Message);
+                return BadRequest(new
+                {
+                    title = "Invalid request",
+                    details = argumentException.Message
+                });
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return StatusCode(500, "Internal server error. Try again later.");
+                return StatusCode(500, new
+                {
+                    title = "Internal server error",
+                    details = exception.Message
+                });
             }
         }
 
@@ -165,11 +205,19 @@ namespace PackageSyncWebAPI.Controllers
             }
             catch (KeyNotFoundException keyNotFoundException)
             {
-                return NotFound(keyNotFoundException.Message);
+                return NotFound(new
+                {
+                    title = "Item not found",
+                    details = keyNotFoundException.Message
+                });
             }
-            catch (Exception)
+            catch (Exception exception)
             {
-                return StatusCode(500, "Internal server error. Try again later.");
+                return StatusCode(500, new
+                {
+                    title = "Internal server error",
+                    details = exception.Message
+                });
             }
         }
     }
