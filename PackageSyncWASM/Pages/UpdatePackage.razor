@@ -1,0 +1,97 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/packages/update/{id:guid}"
+
+@inject PackageService packageService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<Card>
+    <EditForm Model="@packageDTO" OnValidSubmit="@HandleUpdatePackage">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label for="nameInput">Name:</label>
+            <InputText class="form-control" id="nameInput" @bind-Value="packageDTO.Name" />
+            <ValidationMessage For="@(() => packageDTO.Name)" />
+        </div>
+
+        <div class="form-group">
+            <label for="statusInput">Status:</label>
+            <InputSelect @bind-Value="packageDTO.Status">
+                <option value="@PackageStatus.InWarehouse">InWarehouse</option>
+                <option value="@PackageStatus.InTransit">InTransit</option>
+                <option value="@PackageStatus.Delivered">Delivered</option>
+            </InputSelect>
+        </div>
+
+        <div class="form-group">
+            <label for="dateOfDeliveryInput">Date of delivery:</label>
+            <InputDate class="form-control" id="dateOfDeliveryInput" @bind-Value="packageDTO.DateOfDelivery" />
+            <ValidationMessage For="@(() => packageDTO.DateOfDelivery)" />
+        </div>
+
+        <button class="button add" type="submit">Save</button>
+    </EditForm>
+</Card>
+
+@code {
+    private PackageDTO packageDTO = new PackageDTO();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Package package = new Package();
+        package = await packageService.GetById(Id);
+
+        packageDTO.Name = package.Name;
+        packageDTO.Status = package.Status;
+        packageDTO.DateOfDelivery = package.DateOfDelivery;
+    }
+
+    private async Task HandleUpdatePackage()
+    {
+        Package package = new Package();
+        package.Name = packageDTO.Name;
+        package.Status = packageDTO.Status;
+        package.DateOfDelivery = packageDTO.DateOfDelivery;
+
+        string message = await packageService.Update(Id, package);
+
+        if (message.Contains("successfully"))
+        {
+            toastService.ShowSuccess(message);
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            toastService.ShowError(message);
+        }
+    }
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    public class PackageDTO
+    {
+        [Required(ErrorMessage = "The package name is required.")]
+        public string Name { get; set; }
+
+        public PackageStatus Status { get; set; }
+
+        [FutureDate(ErrorMessage = "The date of delivery must be in the future.")]
+        public DateTime? DateOfDelivery { get; set; }
+    }
+
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value is DateTime date && date <= DateTime.Now)
+            {
+                return new ValidationResult(ErrorMessage);
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+}
