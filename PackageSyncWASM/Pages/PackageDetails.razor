@@ -1,0 +1,23 @@
+﻿@page "/packages/{id:guid}"
+
+@inject PackageService packageService
+
+<Card>
+    <p>Id: @package.Id</p>
+    <p>Name: @package.Name</p>
+    <p>Status: @package.Status</p>
+    <p>Date of creation: @package.DateOfCreation</p>
+    <p>Date of delivery: @(package.DateOfDelivery?.ToString() ?? "/")</p>
+</Card>
+
+@code {
+    private Package package = new Package();
+
+    protected override async Task OnInitializedAsync()
+    {
+        package = await packageService.GetById(Id);
+    }
+
+    [Parameter]
+    public Guid Id { get; set; }
+}
