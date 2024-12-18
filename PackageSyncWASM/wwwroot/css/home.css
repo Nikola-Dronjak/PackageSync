@@ -1,0 +1,8 @@
+﻿body {
+    background-color: #E3F2FD;
+    font-family: Arial, sans-serif;
+    display:grid;
+    place-self:center;
+    margin: 0;
+    padding: 0;
+}

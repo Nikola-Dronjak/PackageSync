@@ -12,11 +12,18 @@ using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
     {
-        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+        policy.WithOrigins("http://localhost:5020")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
     });
+});
+
+
+builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -61,6 +68,8 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/swagger/v1.0.0/swagger.json", "PackageSync API v1.0.0");
     });
 }
+
+app.UseCors();
 
 app.UseMiddleware<LoggerMiddleware>();
 
