@@ -1,0 +1,66 @@
+﻿.card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 40px auto;
+    display: inline-block;
+}
+
+.card .table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.card .table thead th {
+    background-color: #1976D2;
+    color: white;
+    padding: 10px;
+    text-align: left;
+    border: 1px solid black;
+}
+
+.card .table tbody td {
+    padding: 10px;
+    border: 1px solid black;
+    text-align: left;
+}
+
+.card .table tbody tr:hover {
+    background-color: #BBDEFB;
+}
+
+.card .button-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card .button-container .button {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.card form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.card form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card form input,
+.card form select,
+.card form textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}

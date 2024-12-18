@@ -1,0 +1,82 @@
+﻿@page "/"
+
+@inject PackageService packageService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<PageTitle>Home</PageTitle>
+
+@if (packages.Count == 0)
+{
+    <Card>
+        <button class="button add" @onclick='() => Navigate("/packages/add")'>Add</button>
+        <p>There are no packages in the database right now.</p>
+    </Card>
+}
+else
+{
+    <Card>
+        <button class="button add" @onclick='() => Navigate("/packages/add")'>Add</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date of creation</th>
+                    <th>Date of delivery</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var package in packages)
+                {
+                    <tr>
+                        <td>@package.Id</td>
+                        <td>@package.Name</td>
+                        <td>@package.Status</td>
+                        <td>@package.DateOfCreation</td>
+                        <td>@(package.DateOfDelivery?.ToString() ?? "/")</td>
+                        <td>
+                            <div class="button-container">
+                                <button class="button view" @onclick='() => Navigate($"/packages/{package.Id}")'>View</button>
+                                <button class="button update" @onclick='() => Navigate($"/packages/update/{package.Id}")'>Update</button>
+                                <button class="button remove" @onclick='() => DeletePackage(package.Id)'>Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </Card>
+}
+
+@code {
+    private List<Package> packages = new List<Package>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        packages = await packageService.GetAll();
+    }
+
+    private void Navigate(string route)
+    {
+        navigationManager.NavigateTo(route);
+    }
+
+    private async Task DeletePackage(Guid id)
+    {
+        string message = await packageService.Delete(id);
+
+        if(message.Contains("successfully"))
+        {
+            toastService.ShowSuccess(message);
+        }
+        else
+        {
+            toastService.ShowError(message);
+        }
+
+        packages = packages.Where(p => p.Id != id).ToList();
+    }
+}

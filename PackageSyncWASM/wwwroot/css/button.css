@@ -1,0 +1,60 @@
+﻿.button {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.button.add {
+    background-color: #28A745;
+    margin-bottom: 10px;
+}
+
+.button.add:hover {
+    background-color: #218838;
+}
+
+.button.add:active {
+    background-color: #1E7E34;
+}
+
+.button.view {
+    background-color: #555555;
+}
+
+.button.view:hover {
+    background-color: #333333;
+}
+
+.button.view:active {
+    background-color: #222222;
+}
+
+.button.update {
+    background-color: #1976D2;
+}
+
+.button.update:hover {
+    background-color: #125AA4;
+}
+
+.button.update:active {
+    background-color: #0D4F8B;
+}
+
+.button.remove {
+    background-color: #D32F2F;
+}
+
+.button.remove:hover {
+    background-color: #A52121;
+}
+
+.button.remove:active {
+    background-color: #8A1C1C;
+}
