@@ -1,5 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
+@inject NavigationManager navigationManager
+
+<nav class="navbar">
+    <div class="navbar-left">
+        <a class="navbar-brand" @onclick='() => navigationManager.NavigateTo("/")'>PackageSync</a>
+    </div>
+    <div class="navbar-right">
+        <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/login")'>Login</a>
+        <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/register")'>Register</a>
+    </div>
+</nav>
+
 <BlazoredToasts />
 
-@Body
+<div class="main-layout">
+    @Body
+</div>

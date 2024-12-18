@@ -6,17 +6,31 @@
 
 <PageTitle>Home</PageTitle>
 
-@if (packages.Count == 0)
+<Card>
+    <div class="search-container">
+        <div class="form-group">
+            <label for="nameSearch">Name:</label>
+            <InputText class="form-control" id="nameSearch" @bind-Value="nameSearch" />
+        </div>
+
+        <div class="form-group">
+            <label for="statusSearch">Status:</label>
+            <InputSelect @bind-Value="statusSearch">
+                <option value="null">---Select Status---</option>
+                <option value="@PackageStatus.InWarehouse">InWarehouse</option>
+                <option value="@PackageStatus.InTransit">InTransit</option>
+                <option value="@PackageStatus.Delivered">Delivered</option>
+            </InputSelect>
+        </div>
+
+        <button class="button view" @onclick='() => FilterPackages()'>Search</button>
+    </div>
+</Card>
+
+@if (filteredPackages.Any())
 {
     <Card>
-        <button class="button add" @onclick='() => Navigate("/packages/add")'>Add</button>
-        <p>There are no packages in the database right now.</p>
-    </Card>
-}
-else
-{
-    <Card>
-        <button class="button add" @onclick='() => Navigate("/packages/add")'>Add</button>
+        <button class="button add" @onclick='() => navigationManager.NavigateTo("/packages/add")'>Add</button>
         <table class="table">
             <thead>
                 <tr>
@@ -29,7 +43,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var package in packages)
+                @foreach (var package in filteredPackages)
                 {
                     <tr>
                         <td>@package.Id</td>
@@ -39,8 +53,8 @@ else
                         <td>@(package.DateOfDelivery?.ToString() ?? "/")</td>
                         <td>
                             <div class="button-container">
-                                <button class="button view" @onclick='() => Navigate($"/packages/{package.Id}")'>View</button>
-                                <button class="button update" @onclick='() => Navigate($"/packages/update/{package.Id}")'>Update</button>
+                                <button class="button view" @onclick='() => navigationManager.NavigateTo($"/packages/{package.Id}")'>View</button>
+                                <button class="button update" @onclick='() => navigationManager.NavigateTo($"/packages/update/{package.Id}")'>Update</button>
                                 <button class="button remove" @onclick='() => DeletePackage(package.Id)'>Remove</button>
                             </div>
                         </td>
@@ -49,19 +63,31 @@ else
             </tbody>
         </table>
     </Card>
+    
+}
+else
+{
+    <Card>
+        <button class="button add" @onclick='() => navigationManager.NavigateTo("/packages/add")'>Add</button>
+        <p>No packages found.</p>
+    </Card>
 }
 
 @code {
     private List<Package> packages = new List<Package>();
+    private List<Package> filteredPackages = new List<Package>();
+    private string nameSearch = string.Empty;
+    private PackageStatus? statusSearch = null;
 
     protected override async Task OnInitializedAsync()
     {
         packages = await packageService.GetAll();
+        FilterPackages();
     }
 
-    private void Navigate(string route)
+    private void FilterPackages()
     {
-        navigationManager.NavigateTo(route);
+        filteredPackages = packages.Where(p => (string.IsNullOrWhiteSpace(nameSearch) || p.Name.Contains(nameSearch, StringComparison.OrdinalIgnoreCase)) && (!statusSearch.HasValue || p.Status == statusSearch.Value)).ToList();
     }
 
     private async Task DeletePackage(Guid id)
@@ -77,6 +103,6 @@ else
             toastService.ShowError(message);
         }
 
-        packages = packages.Where(p => p.Id != id).ToList();
+        filteredPackages = packages.Where(p => p.Id != id).ToList();
     }
 }

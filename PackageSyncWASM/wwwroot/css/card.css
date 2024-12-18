@@ -64,3 +64,26 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+.card .search-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.card .search-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.card .search-container input,
+.card .search-container select{
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
