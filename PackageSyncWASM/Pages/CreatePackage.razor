@@ -1,0 +1,72 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/packages/add"
+
+@inject PackageService packageService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<Card>
+    <EditForm Model="@packageDTO" OnValidSubmit="@HandleAddPackage">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label for="nameInput">Name:</label>
+            <InputText class="form-control" id="nameInput" @bind-Value="packageDTO.Name" />
+            <ValidationMessage For="@(() => packageDTO.Name)" />
+        </div>
+
+        <div class="form-group">
+            <label for="dateOfDeliveryInput">Date of delivery:</label>
+            <InputDate class="form-control" id="dateOfDeliveryInput" @bind-Value="packageDTO.DateOfDelivery" />
+            <ValidationMessage For="@(() => packageDTO.DateOfDelivery)" />
+        </div>
+
+        <button class="button add" type="submit">Save</button>
+    </EditForm>
+</Card>
+
+@code {
+    private PackageDTO packageDTO = new PackageDTO();
+
+    private async Task HandleAddPackage()
+    {
+        Package package = new Package();
+        package.Name = packageDTO.Name;
+        package.DateOfDelivery = packageDTO.DateOfDelivery;
+
+        string message = await packageService.Add(package);
+
+        if (message.Contains("successfully"))
+        {
+            toastService.ShowSuccess(message);
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            toastService.ShowError(message);
+        }
+    }
+
+    public class PackageDTO
+    {
+        [Required(ErrorMessage = "The package name is required.")]
+        public string Name { get; set; }
+
+        [FutureDate(ErrorMessage = "The date of delivery must be in the future.")]
+        public DateTime? DateOfDelivery { get; set; }
+    }
+
+    public class FutureDateAttribute : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value is DateTime date && date <= DateTime.Now)
+            {
+                return new ValidationResult(ErrorMessage);
+            }
+
+            return ValidationResult.Success;
+        }
+    }
+}
