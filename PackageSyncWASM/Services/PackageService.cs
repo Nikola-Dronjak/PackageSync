@@ -1,4 +1,5 @@
-﻿using PackageSync.Domain;
+﻿using Blazored.LocalStorage;
+using PackageSync.Domain;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -8,10 +9,12 @@ namespace PackageSyncWASM.Services
     public class PackageService
     {
         private readonly HttpClient _httpClient;
+        private readonly ILocalStorageService _localStorageService;
 
-        public PackageService(HttpClient httpClient)
+        public PackageService(HttpClient httpClient, ILocalStorageService localStorageService)
         {
             _httpClient = httpClient;
+            _localStorageService = localStorageService;
         }
 
         public async Task<List<Package>> GetAll()
@@ -107,6 +110,8 @@ namespace PackageSyncWASM.Services
 
         public async Task<string> Delete(Guid id)
         {
+            var token = await _localStorageService.GetItemAsync<string>("authToken");
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
             var response = await _httpClient.DeleteAsync($"/api/packages/{id}");
             if (response.StatusCode == HttpStatusCode.NotFound)
             {
@@ -118,6 +123,7 @@ namespace PackageSyncWASM.Services
                 return "Whoops, something went wrong.";
             }
 
+            _httpClient.DefaultRequestHeaders.Authorization = null;
             return "The package was removed successfully.";
         }
     }

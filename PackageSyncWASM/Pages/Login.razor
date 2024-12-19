@@ -1,0 +1,59 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/login"
+
+@inject AuthService authService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<Card>
+    <h3>Login</h3>
+    <EditForm Model="@userDTO" OnValidSubmit="@HandleLogin">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label for="usernameInput">Username:</label>
+            <InputText class="form-control" id="usernameInput" @bind-Value="userDTO.Username" />
+            <ValidationMessage For="@(() => userDTO.Username)" />
+        </div>
+
+        <div class="form-group">
+            <label for="passwordInput">Password:</label>
+            <InputText type="password" class="form-control" id="passwordInput" @bind-Value="userDTO.Password" />
+            <ValidationMessage For="@(() => userDTO.Password)" />
+        </div>
+
+        <button class="button add" type="submit">Sign in</button>
+    </EditForm>
+</Card>
+
+@code {
+    private UserDTO userDTO = new UserDTO();
+
+    private async Task HandleLogin()
+    {
+        User user = new User();
+        user.Username = userDTO.Username;
+        user.Password = userDTO.Password;
+
+        string message = await authService.Login(user);
+
+        if (message.Contains("successful"))
+        {
+            navigationManager.NavigateTo("/");
+        }
+        else
+        {
+            toastService.ShowError(message);
+        }
+    }
+
+    public class UserDTO
+    {
+        [Required(ErrorMessage = "The username is required.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "The password is required.")]
+        public string Password { get; set; }
+    }
+}

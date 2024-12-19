@@ -3,6 +3,7 @@
 @inject PackageService packageService
 @inject IToastService toastService
 @inject NavigationManager navigationManager
+@inject AuthService authService
 
 <PageTitle>Home</PageTitle>
 
@@ -55,7 +56,9 @@
                             <div class="button-container">
                                 <button class="button view" @onclick='() => navigationManager.NavigateTo($"/packages/{package.Id}")'>View</button>
                                 <button class="button update" @onclick='() => navigationManager.NavigateTo($"/packages/update/{package.Id}")'>Update</button>
-                                <button class="button remove" @onclick='() => DeletePackage(package.Id)'>Remove</button>
+                                @if(authService.isLoggedIn){
+                                    <button class="button remove" @onclick='() => DeletePackage(package.Id)'>Remove</button>
+                                }
                             </div>
                         </td>
                     </tr>

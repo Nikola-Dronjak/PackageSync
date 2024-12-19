@@ -1,14 +1,22 @@
 ﻿@inherits LayoutComponentBase
 
 @inject NavigationManager navigationManager
+@inject AuthService authService
 
 <nav class="navbar">
     <div class="navbar-left">
         <a class="navbar-brand" @onclick='() => navigationManager.NavigateTo("/")'>PackageSync</a>
     </div>
     <div class="navbar-right">
-        <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/login")'>Login</a>
-        <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/register")'>Register</a>
+        @if (!authService.isLoggedIn)
+        {
+            <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/login")'>Login</a>
+            <a class="navbar-link" @onclick='() => navigationManager.NavigateTo("/register")'>Register</a>
+        }
+        else
+        {
+            <a class="navbar-link" @onclick='() => LogoutUser()'>Logout</a>
+        }
     </div>
 </nav>
 
@@ -17,3 +25,16 @@
 <div class="main-layout">
     @Body
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await authService.CheckLoginStatus();
+    }
+
+    private async void LogoutUser()
+    {
+        await authService.Logout();
+        await authService.CheckLoginStatus();
+    }
+}

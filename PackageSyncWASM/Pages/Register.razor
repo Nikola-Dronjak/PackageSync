@@ -1,0 +1,101 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+
+@page "/register"
+
+@inject AuthService authService
+@inject IToastService toastService
+@inject NavigationManager navigationManager
+
+<Card>
+    <h3>Sign up</h3>
+    <EditForm Model="@userDTO" OnValidSubmit="@HandleRegister">
+        <DataAnnotationsValidator />
+
+        <div class="form-group">
+            <label for="usernameInput">Username:</label>
+            <InputText class="form-control" id="usernameInput" @bind-Value="userDTO.Username" />
+            <ValidationMessage For="@(() => userDTO.Username)" />
+        </div>
+
+        <div class="form-group">
+            <label for="passwordInput">Password:</label>
+            <InputText type="password" class="form-control" id="passwordInput" @bind-Value="userDTO.Password" />
+            <ValidationMessage For="@(() => userDTO.Password)" />
+        </div>
+
+        <button class="button add" type="submit">Sign up</button>
+    </EditForm>
+</Card>
+
+@code {
+    private UserDTO userDTO = new UserDTO();
+
+    private async Task HandleRegister()
+    {
+        User user = new User();
+        user.Username = userDTO.Username;
+        user.Password = userDTO.Password;
+
+        string message = await authService.Register(user);
+
+        if (message.Contains("successfully"))
+        {
+            toastService.ShowSuccess(message);
+            navigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            toastService.ShowError(message);
+        }
+    }
+
+    public class UserDTO
+    {
+        [Required(ErrorMessage = "The username is required.")]
+        public string Username { get; set; }
+
+        [Required(ErrorMessage = "The password is required.")]
+        [PasswordStructure]
+        public string Password { get; set; }
+    }
+
+    public class PasswordStructure : ValidationAttribute
+    {
+        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        {
+            if (value is string password)
+            {
+                if (password.Length < 6)
+                {
+                    return new ValidationResult("Password must contain at least 6 characters.");
+                }
+
+                if (!password.Any(char.IsLower))
+                {
+                    return new ValidationResult("Password must contain at least one lowercase letter.");
+                }
+
+                if (!password.Any(char.IsUpper))
+                {
+                    return new ValidationResult("Password must contain at least one uppercase letter.");
+                }
+
+                if (!password.Any(char.IsDigit))
+                {
+                    return new ValidationResult("Password must contain at least one digit.");
+                }
+
+                var specialCharPattern = @"[!?@#$%^&*()_+={}[\]:;\""<>,.?/\\|]";
+                if (!Regex.IsMatch(password, specialCharPattern))
+                {
+                    return new ValidationResult("Password must contain at least one special character (!, ?, @, #, $, %, ^, &, *, etc.).");
+                }
+
+                return ValidationResult.Success;
+            }
+
+            return new ValidationResult("Password must be a string.");
+        }
+    }
+}
