@@ -39,30 +39,26 @@ namespace PackageSyncWebAPI.Services
                 return null;
             }
 
-            var userFromDb = await _userManager.FindByNameAsync(user.Username);
-            if (userFromDb == null)
-            {
-                return null;
-            }
+            var jwtKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
 
-            var claims = new[]
+            var userClaims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userFromDb.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.Name, user.Username)
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var credentials = new SigningCredentials(jwtKey, SecurityAlgorithms.HmacSha256Signature);
 
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds
-            );
+            var tokenDescriptior = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(userClaims),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = credentials,
+                Issuer = _configuration["Jwt:Issuer"],
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var jwt = tokenHandler.CreateToken(tokenDescriptior);
+            return tokenHandler.WriteToken(jwt);
         }
     }
 }

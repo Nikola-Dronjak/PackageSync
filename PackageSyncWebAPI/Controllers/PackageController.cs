@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PackageSync.Domain;
@@ -197,6 +198,7 @@ namespace PackageSyncWebAPI.Controllers
         /// <response code="404">The package with the given id was not found.</response>
         /// <response code="500">An unexpected error occurred on the server.</response>
         [HttpDelete("{id:guid}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> DeletePackage(Guid id)
         {
             try
