@@ -84,6 +84,14 @@ builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Confi
 
 var app = builder.Build();
 
+using (var serviceScope = app.Services.CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.EnsureCreated();
+}
+
+UserSeeder.SeedUsers(app).Wait();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
