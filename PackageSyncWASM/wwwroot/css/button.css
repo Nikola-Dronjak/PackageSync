@@ -47,6 +47,12 @@
     background-color: #0D4F8B;
 }
 
+.button.update:disabled {
+    background-color: #A7C9E1;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
 .button.remove {
     background-color: #D32F2F;
 }
@@ -57,4 +63,10 @@
 
 .button.remove:active {
     background-color: #8A1C1C;
+}
+
+.button.remove:disabled {
+    background-color: #F4B8A6;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
