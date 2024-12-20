@@ -192,6 +192,7 @@ namespace PackageSyncWebAPI.Controllers
         /// </summary>
         /// <remarks>
         /// This endpoint allows clients to remove an existing package by providing its id.
+        /// In order to delete packages the user must be signed in.
         /// </remarks>
         /// <param name="id">The id of the package that should be removed.</param>
         /// <response code="200">Package removed successfully. Returns the removed package.</response>
