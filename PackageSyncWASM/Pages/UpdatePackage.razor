@@ -7,6 +7,7 @@
 @inject NavigationManager navigationManager
 
 <Card>
+    <h3>Update package</h3>
     <EditForm Model="@packageDTO" OnValidSubmit="@HandleUpdatePackage">
         <DataAnnotationsValidator />
 
@@ -27,7 +28,7 @@
 
         <div class="form-group">
             <label for="dateOfDeliveryInput">Date of delivery:</label>
-            <InputDate class="form-control" id="dateOfDeliveryInput" @bind-Value="packageDTO.DateOfDelivery" />
+            <input type="datetime-local" class="form-control" id="dateOfDeliveryInput" @bind="packageDTO.DateOfDelivery" />
             <ValidationMessage For="@(() => packageDTO.DateOfDelivery)" />
         </div>
 
@@ -88,7 +89,7 @@
         {
             if (value is DateTime date && date <= DateTime.Now)
             {
-                return new ValidationResult(ErrorMessage);
+                return new ValidationResult(ErrorMessage, new[] { validationContext.MemberName });
             }
 
             return ValidationResult.Success;
