@@ -47,6 +47,9 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     options.IncludeXmlComments(xmlPath);
+
+    var libraryXmlPath = Path.Combine(AppContext.BaseDirectory, "PackageSync.Domain.xml");
+    options.IncludeXmlComments(libraryXmlPath);
 });
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("PackageSyncDb"));
