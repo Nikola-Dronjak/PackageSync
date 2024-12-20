@@ -35,6 +35,6 @@
     private async void LogoutUser()
     {
         await authService.Logout();
-        await authService.CheckLoginStatus();
+        navigationManager.NavigateTo("/", forceLoad: true);
     }
 }
